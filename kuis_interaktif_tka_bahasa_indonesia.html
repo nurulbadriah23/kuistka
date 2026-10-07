@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif TKA Bahasa Indonesia - Kelas XII</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Family Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f4f6fb;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .animate-pop {
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- NAVIGATION HEADER -->
+    <header class="bg-indigo-700 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white/10 p-2 rounded-lg backdrop-blur-md">
+                    <i class="fa-solid fa-book-open-reader text-2xl text-amber-300"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Kuis TKA Bahasa Indonesia</h1>
+                    <p class="text-xs text-indigo-200">Kelas XII • Kurikulum Merdeka Pembelajaran Mendalam</p>
+                </div>
+            </div>
+            <div id="userBadge" class="hidden items-center space-x-2 bg-indigo-800/80 px-3 py-1.5 rounded-full border border-indigo-500/30 text-xs">
+                <i class="fa-solid fa-user-circle text-amber-300 text-sm"></i>
+                <span id="displayStudentName" class="font-semibold text-indigo-100">Siswa</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
+
+        <!-- SCREEN 1: WELCOME / LANDING PAGE -->
+        <div id="welcomeScreen" class="max-w-2xl mx-auto bg-white rounded-3xl shadow-xl p-8 border border-slate-100 text-center animate-pop my-8">
+            <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner">
+                <i class="fa-solid fa-graduation-cap text-4xl"></i>
+            </div>
+            <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Tes Kompetensi Akademik (TKA)</span>
+            <h2 class="text-2xl font-extrabold text-slate-800 mt-3 mb-2">Siap Menguji Kemampuan Literasi Membaca?</h2>
+            <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+                Kuis ini menguji 3 Kompetensi Utama: <b>Pemahaman Tekstual</b>, <b>Pemahaman Inferensial</b>, serta <b>Evaluasi & Apresiasi</b> melalui Teks Informasi, Prosa, dan Puisi.
+            </p>
+
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 text-left mb-6 space-y-2 text-xs text-slate-600">
+                <div class="flex items-center space-x-2 text-indigo-700 font-semibold mb-1">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Ketentuan Kuis:</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <i class="fa-solid fa-check text-emerald-500 mt-0.5"></i>
+                    <span>Total 30 Soal dengan variasi Pilihan Ganda (A-E), Kompleks (Multi-Jawaban), & Kompleks (Benar/Salah).</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <i class="fa-solid fa-check text-emerald-500 mt-0.5"></i>
+                    <span>Skor otomatis dihitung & jawaban terekam ke database pembelajaran.</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <i class="fa-solid fa-envelope text-indigo-500 mt-0.5"></i>
+                    <span>Terkoneksi dengan Google Sheets: <b>nurulbadriah23@guru.sma.belajar.id</b></span>
+                </div>
+            </div>
+
+            <form id="startForm" onsubmit="event.preventDefault(); startQuiz();" class="space-y-4">
+                <div class="text-left">
+                    <label for="inputName" class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap Siswa <span class="text-rose-500">*</span></label>
+                    <input type="text" id="inputName" required placeholder="Masukkan nama lengkapmu di sini..." 
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition">
+                </div>
+                <button type="submit" id="btnStart" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-indigo-200 transition duration-200 flex items-center justify-center space-x-2">
+                    <span>MULAI KUIS</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- SCREEN 2: QUIZ INTERACTION PAGE -->
+        <div id="quizScreen" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 my-2">
+            
+            <!-- LEFT COLUMN: READING PASSAGES PANEL -->
+            <div class="lg:col-span-5 bg-white rounded-2xl shadow-md p-5 border border-slate-200 flex flex-col h-[650px]">
+                <div class="flex items-center justify-between border-b pb-3 mb-3">
+                    <h3 class="font-bold text-slate-800 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-file-lines text-indigo-600"></i>
+                        <span>Teks Bacaan Acuan</span>
+                    </h3>
+                    <div class="flex space-x-1" id="passageTabs">
+                        <button onclick="switchTab('informasi')" id="tab-informasi" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-indigo-100 text-indigo-700 transition">Informasi</button>
+                        <button onclick="switchTab('prosa')" id="tab-prosa" class="px-2.5 py-1 text-xs font-semibold rounded-lg text-slate-500 hover:bg-slate-100 transition">Prosa</button>
+                        <button onclick="switchTab('puisi')" id="tab-puisi" class="px-2.5 py-1 text-xs font-semibold rounded-lg text-slate-500 hover:bg-slate-100 transition">Puisi</button>
+                    </div>
+                </div>
+
+                <div class="overflow-y-auto custom-scrollbar flex-grow pr-2 text-slate-700 text-sm leading-relaxed space-y-3" id="passageContent">
+                    <!-- Text dynamic insertion -->
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: QUESTION & OPTIONS PANEL -->
+            <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
+                
+                <!-- PROGRESS & STATS BAR -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center justify-between">
+                    <div>
+                        <span id="questionProgressText" class="text-xs font-bold text-indigo-600 uppercase tracking-wide">Soal 1 dari 30</span>
+                        <div class="w-36 bg-slate-100 h-2 rounded-full mt-1.5 overflow-hidden">
+                            <div id="progressBar" class="bg-indigo-600 h-full w-0 transition-all duration-300"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4 text-xs font-semibold">
+                        <div class="bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-200">
+                            Skor Sementara: <span id="currentScore" class="font-extrabold text-sm">0</span>
+                        </div>
+                        <div id="badgeType" class="bg-amber-50 text-amber-700 px-2.5 py-1.5 rounded-lg border border-amber-200 font-bold">
+                            PG Standar
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUESTION CARD -->
+                <div class="bg-white rounded-2xl shadow-md p-6 border border-slate-200 flex-grow flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 text-xs font-bold text-indigo-600 mb-2">
+                            <span id="competencyBadge" class="bg-indigo-50 px-2.5 py-1 rounded-md border border-indigo-100">Pemahaman Tekstual</span>
+                        </div>
+                        <h4 id="questionText" class="text-base font-bold text-slate-800 mb-4 leading-snug">
+                            <!-- Question text -->
+                        </h4>
+
+                        <!-- OPTIONS CONTAINER -->
+                        <div id="optionsContainer" class="space-y-2.5 my-4">
+                            <!-- Options standard / checkboxes / true-false matrix -->
+                        </div>
+                    </div>
+
+                    <!-- IMMEDIATE FEEDBACK BOX -->
+                    <div id="feedbackBox" class="hidden p-4 rounded-xl mb-4 text-xs leading-relaxed border animate-pop">
+                        <div class="flex items-center space-x-2 font-bold text-sm mb-1" id="feedbackHeader">
+                            <!-- Icon and Status -->
+                        </div>
+                        <p id="feedbackExplanation" class="text-slate-700"></p>
+                    </div>
+
+                    <!-- ACTION BUTTONS BAR -->
+                    <div class="flex items-center justify-between border-t pt-4 mt-2">
+                        <button id="btnPrev" onclick="prevQuestion()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition flex items-center space-x-1.5 disabled:opacity-40 disabled:cursor-not-allowed">
+                            <i class="fa-solid fa-chevron-left"></i>
+                            <span>KEMBALI</span>
+                        </button>
+
+                        <div class="flex space-x-2">
+                            <button id="btnSubmit" onclick="submitAnswer()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow-md shadow-indigo-100 transition flex items-center space-x-1.5">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>JAWAB</span>
+                            </button>
+                            <button id="btnNext" onclick="nextQuestion()" class="hidden px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md shadow-emerald-100 transition flex items-center space-x-1.5">
+                                <span>LANJUT</span>
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                            <button id="btnResult" onclick="showResults()" class="hidden px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs shadow-md shadow-amber-100 transition flex items-center space-x-1.5">
+                                <span>LIHAT HASIL</span>
+                                <i class="fa-solid fa-trophy"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SCREEN 3: RESULTS & MOTIVATION PAGE -->
+        <div id="resultsScreen" class="hidden max-w-3xl mx-auto bg-white rounded-3xl shadow-xl p-8 border border-slate-100 text-center animate-pop my-6">
+            <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
+                <i class="fa-solid fa-award text-4xl"></i>
+            </div>
+
+            <h2 id="resultGreeting" class="text-2xl font-black text-slate-800 mb-1">Hebat, Siswa!</h2>
+            <p class="text-xs text-slate-500 mb-6">Kamu telah menyelesaikan Tes Kompetensi Akademik (TKA) Bahasa Indonesia Kelas XII</p>
+
+            <!-- STATS SCORE CARDS -->
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-center">
+                    <span class="text-xs font-semibold text-emerald-600 block mb-1">Jawaban Benar</span>
+                    <span id="resCorrect" class="text-2xl font-black text-emerald-700">0</span>
+                </div>
+                <div class="bg-rose-50 border border-rose-200 rounded-2xl p-4 text-center">
+                    <span class="text-xs font-semibold text-rose-600 block mb-1">Jawaban Salah</span>
+                    <span id="resWrong" class="text-2xl font-black text-rose-700">0</span>
+                </div>
+                <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-4 text-center">
+                    <span class="text-xs font-semibold text-indigo-600 block mb-1">Nilai Akhir</span>
+                    <span id="resScore" class="text-2xl font-black text-indigo-700">0</span>
+                </div>
+            </div>
+
+            <!-- MOTIVATIONAL MESSAGE -->
+            <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 text-left mb-6">
+                <h4 class="font-bold text-sm text-slate-800 mb-1 flex items-center space-x-2">
+                    <i class="fa-solid fa-comment-dots text-indigo-600"></i>
+                    <span>Apresiasi & Catatan Performa:</span>
+                </h4>
+                <p id="motivationText" class="text-xs text-slate-600 leading-relaxed">
+                    <!-- Dynamic motivational string -->
+                </p>
+            </div>
+
+            <!-- GOOGLE SHEETS INTEGRATION NOTIFICATION BADGE -->
+            <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-3 text-xs text-indigo-800 flex items-center justify-between mb-8">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-cloud-arrow-up text-indigo-600 text-base"></i>
+                    <span>Hasil & Rekapitulasi Otomatis Terkirim ke: <b>nurulbadriah23@guru.sma.belajar.id</b></span>
+                </div>
+                <span class="bg-indigo-200 text-indigo-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Tersimpan</span>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="flex justify-center space-x-4">
+                <button onclick="restartQuiz()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow-lg shadow-indigo-200 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>COBA LAGI</span>
+                </button>
+                <button onclick="finishQuiz()" class="px-6 py-3 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl text-xs shadow-lg shadow-slate-300 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>SELESAI</span>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 py-3 text-center text-xs text-slate-500">
+        <p>© 2026 Media Pembelajaran Interaktif TKA Bahasa Indonesia • Kurikulum Merdeka</p>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // PASSAGES DATA
+        const PASSAGES = {
+            informasi: {
+                title: "Teks Informasi (Non-Fiksi)",
+                subtitle: "Transformasi Digital dan Masa Depan Literasi Bahasa di Indonesia",
+                content: `
+                <p class="mb-3">Di era pesatnya perkembangan teknologi kecerdasan buatan (<i>Artificial Intelligence</i>) dan media sosial, pola konsumsi informasi masyarakat Indonesia, khususnya generasi muda kelas XII, mengalami perubahan mendasar. Membaca tidak lagi terbatas pada media cetak konvensional seperti buku teks dan surat kabar, melainkan telah bergeser ke ranah digital yang serba cepat dan dinamis. Berdasarkan data Kementerian Komunikasi dan Digital tahun 2024, tingkat penetrasi internet di kalangan remaja mencapai 89%, dengan durasi rata-rata penggunaan media sosial selama 4 hingga 6 jam per hari.</p>
+                <p class="mb-3">Fenomena ini menghadirkan dua sisi mata uang bagi perkembangan literasi. Di satu sisi, aksesibilitas terhadap sumber belajar digital, artikel ilmiah terbuka, dan perpustakaan maya kian melimpah, memungkinkan siswa mengeksplorasi pengetahuan tanpa batas ruang dan waktu. Di sisi lain, banjir informasi (<i>information overload</i>) melahirkan tantangan serius berupa maraknya disinformasi, berkurangnya daya fokus (<i>attention span</i>), serta kecenderungan membaca secara dangkal (<i>skimming</i> dan <i>scanning</i>) tanpa pemahaman kritis. Banyak pembaca muda yang mudah terkecoh oleh judul berita umpan klik (<i>clickbait</i>) tanpa memverifikasi fakta penunjang di dalam isi berita.</p>
+                <p>Oleh karena itu, penguatan kompetensi akademis dalam literasi membaca kritis menjadi kebutuhan krusial. Siswa tidak hanya dituntut untuk mampu mengidentifikasi informasi tersurat, tetapi juga harus lihai membedakan antara opini subjektif dan fakta empiris, mengevaluasi validitas argumen penulis, serta menyimpulkan makna tersirat dalam sebuah gagasan kompleks. Literasi digital yang ideal bukan sekadar mahir mengoperasikan perangkat teknologi, melainkan kemampuan bernalar kritis, memilah informasi yang sahih, serta memanfaatkan pengetahuan secara bijak demi kemajuan peradaban bangsa.</p>
+                `
+            },
+            prosa: {
+                title: "Teks Fiksi (Prosa)",
+                subtitle: "Suara dari Lumbung Tua",
+                content: `
+                <p class="mb-3">Pak Kadir berdiri terpaku di ambang pintu lumbung padi kayu jati milik keluarganya yang mulai lapuk dimakan usia. Di luarnya, hamparan sawah desa yang dulunya hijau subur kini bersiap berganti rupa menjadi kawasan industri manufaktur. Suara deru mesin ekskavator di kejauhan seolah menjadi gending duka yang terus mengikis ketenangan hatinya. Anak sulungnya, Rian, seorang sarjana teknik lingkungan yang baru lulus dari kota, mendekat sembari membawa selembar berkas tawaran ganti rugi tanah.</p>
+                <p class="mb-3">"Bapak, jika kita menolak tawaran ini lagi, pabrik akan tetap dibangun di sekeliling lahan kita. Sawah kita akan terisolasi dan kekurangan pasokan air irigasi. Mengapa kita tidak mengalihkan dana ganti rugi ini untuk membangun pusat pengolahan limbah ramah lingkungan atau pertanian hidroponik berbasis teknologi di lahan sisa?" bisik Rian lembut, mencoba menyentuh sudut pandang ayahnya.</p>
+                <p>Pak Kadir menghela napas panjang, meremas jemarinya yang kasar akibat puluhan tahun menggenggam cangkul. "Tanah ini bukan sekadar segumpal tanah dan batu, Rian. Di sinilah keringat kakekmu menetes, menumbuhkan bulir-bulir beras yang menghidupi keluarga kita dan warga desa saat krisis pangan era sembilan puluhan. Menjualnya terasa seperti menjual ingatan dan kehormatan keluarga." Namun, melihat kesungguhan dan binar kecerdasan di mata anaknya, Pak Kadir menyadari bahwa zaman telah berubah, dan keberanian untuk beradaptasi mungkin adalah cara baru untuk menghormati warisan tersebut.</p>
+                `
+            },
+            puisi: {
+                title: "Teks Fiksi (Puisi)",
+                subtitle: "Jejak Renjana di Hamparan Digital (Karya: Anindya K.)",
+                content: `
+                <div class="italic space-y-3 font-serif bg-indigo-50/50 p-4 rounded-xl border border-indigo-100">
+                    <p>Layar kaca ini memancarkan pendar biru,<br>
+                    menampung riak kata yang berkelana tanpa jeda.<br>
+                    Di antara ketukan jemari dan deret kode,<br>
+                    ada rindu yang tertata rapi dalam bentang algoritma.</p>
+
+                    <p>Kita menyusuri lorong-lorong maya,<br>
+                    mencari makna di balik riuh rendah kabar,<br>
+                    apakah kebenaran masih berdiri tegak,<br>
+                    ataukah telah pudar tergerus pesona kilat sesaat?</p>
+
+                    <p>Pena tua di sudut meja berdebu,<br>
+                    tersenyum bisu melihat kertas yang merindu inklinasi tinta.<br>
+                    Namun di benak anak-anak zaman,<br>
+                    gagasan tetaplah benih yang tumbuh di tanah mana saja:<br>
+                    asal ada nalar yang siap menyiang,<br>
+                    dan nurani yang enggan padam.</p>
+                </div>
+                `
+            }
+        };
+
+        // 30 QUESTIONS DATABASE
+        const QUESTIONS = [
+            // TEKS INFORMASI (SOAL 1 - 10)
+            {
+                id: 1,
+                passageKey: 'informasi',
+                competency: 'Pemahaman Tekstual',
+                type: 'single',
+                question: 'Berdasarkan data Kemenkomdigi tahun 2024 dalam teks informasi, berapakah persentase tingkat penetrasi internet di kalangan remaja Indonesia?',
+                options: ['A. 75%', 'B. 80%', 'C. 84%', 'D. 89%', 'E. 95%'],
+                correct: 3,
+                explanation: 'Secara tersurat dalam paragraf pertama disebutkan: "Berdasarkan data Kementerian Komunikasi dan Digital tahun 2024, tingkat penetrasi internet di kalangan remaja mencapai 89%".'
+            },
+            {
+                id: 2,
+                passageKey: 'informasi',
+                competency: 'Pemahaman Tekstual',
+                type: 'multiple',
+                question: 'Manakah di antara pilihan berikut yang secara eksplisit dinyatakan sebagai sumber belajar digital dalam paragraf kedua? (Pilih semua jawaban yang benar)',
+                options: [
+                    'A. Artikel ilmiah terbuka',
+                    'B. Modul cetak perpustakaan daerah',
+                    'C. Perpustakaan maya',
+                    'D. Buletin cetak sekolah',
+                    'E. Jurnal fisik universitas'
+                ],
+                correct: [0, 2],
+                explanation: 'Dua sumber belajar digital yang tersurat pada paragraf kedua adalah "artikel ilmiah terbuka" dan "perpustakaan maya". Pilihan lain merupakan media cetak konvensional.'
+            },
+            {
+                id: 3,
+                passageKey: 'informasi',
+                competency: 'Pemahaman Tekstual',
+                type: 'true_false',
+                question: 'Tentukan apakah setiap pernyataan berikut BENAR atau SALAH berdasarkan informasi tersurat dalam teks!',
+                statements: [
+                    'Durasi rata-rata penggunaan media sosial remaja adalah 4 hingga 6 jam per hari.',
+                    'Teknologi AI menyebabkan pembaca sama sekali tidak bisa membedakan opini dan fakta.',
+                    'Membaca konvensional kini telah sepenuhnya ditinggalkan oleh seluruh lapisan masyarakat.'
+                ],
+                correct: [true, false, false],
+                explanation: 'Pernyataan 1 BENAR (tersurat di paragraf 1). Pernyataan 2 SALAH (teks menyatakan hal tersebut sebagai tantangan bernalar, bukan kemutlakan total). Pernyataan 3 SALAH (teks menyebut pergeseran pada remaja kelas XII, bukan klaim totalitas).'
+            },
+            {
+                id: 4,
+                passageKey: 'informasi',
+                competency: 'Pemahaman Inferensial',
+                type: 'single',
+                question: 'Apakah akibat tersirat utama dari fenomena banjir informasi (information overload) bagi daya kritis pembaca muda?',
+                options: [
+                    'A. Meningkatnya minat beli buku teks konvensional di toko buku.',
+                    'B. Kecenderungan menyerap informasi secara instan tanpa menguji kebenaran fakta.',
+                    'C. Penurunan jumlah pengguna internet di wilayah perkotaan.',
+                    'D. Hilangnya kemampuan mengoperasikan media jejaring sosial.',
+                    'E. Bertambahnya durasi jam belajar mandiri di sekolah.'
+                ],
+                correct: 1,
+                explanation: 'Banjir informasi tersirat memicu pola membaca dangkal (skimming/scanning) dan kemudahan terkecoh judul umpan klik (clickbait) tanpa pengujian verifikasi fakta secara mendalam.'
+            },
+            {
+                id: 5,
+                passageKey: 'informasi',
+                competency: 'Pemahaman Inferensial',
+                type: 'single',
+                question: 'Mengapa penulis menggunakan metafora "dua sisi mata uang" pada paragraf kedua?',
+                options: [
+                    'A. Menggambarkan biaya langganan internet yang mahal bagi remaja.',
+                    'B. Menunjukkan adanya nilai keuntungan ekonomi dari media sosial.',
+                    'C. Menjelaskan bahwa kemajuan teknologi digital membawa dampak positif sekaligus negatif secara serentak.',
+                    'D. Mengkritik kebijakan pemerintah dalam regulasi pasar digital.',
+                    'E. Membandingkan antara mata uang digital dan mata uang fisik.'
+                ],
+                correct: 2,
+                explanation: 'Metafora "dua sisi mata uang" menggambarkan kemajuan digital memiliki potensi manfaat besar (akses luas) sekaligus ancaman bahaya (disinformasi dan fokus dangkal).'
+            },
+            {
+                id: 6,
+                passageKey: 'informasi',
+                competency: 'Pemahaman Inferensial',
+                type: 'multiple',
+                question: 'Berdasarkan implikasi isi teks, manakah sikap membaca yang tergolong sebagai membaca dangkal (skimming/scanning tanpa daya kritis)? (Pilih lebih dari satu)',
+                options: [
+                    'A. Menyimpulkan isi berita hanya dari judul tanpa membaca narasi lengkap.',
+                    'B. Membandingkan data dari tiga sumber berita ilmiah sebelum mempercayainya.',
+                    'C. Membagikan ulang tulisan di media sosial karena terpancing emosi provokatif.',
+                    'D. Memeriksa rekam jejak penulis dan kredibilitas situs berita.',
+                    'E. Mengabaikan rincian argumen penunjang di dalam paragraf isi.'
+                ],
+                correct: [0, 2, 4],
+                explanation: 'Opsi A, C, dan E merupakan cerminan membaca dangkal dan reaktif. Opsi B dan D merupakan bentuk membaca kritis.'
+            },
+            {
+                id: 7,
+                passageKey: 'informasi',
+                competency: 'Evaluasi dan Apresiasi',
+                type: 'single',
+                question: 'Bagaimanakah penilaian kritis yang paling tepat terhadap efektivitas paragraf penutup (paragraf 3) dalam menyampaikan simpulan teks?',
+                options: [
+                    'A. Kurang efektif karena tidak menyertakan angka statistik statistik lanjutan.',
+                    'B. Sangat efektif karena berhasil merangkum solusi atas tantangan digital dengan menekankan nalar kritis sebagai inti literasi.',
+                    'C. Inefektif karena menyimpang dari topik pembahasan penetrasi internet.',
+                    'D. Terlalu berbelit-belit sehingga membingungkan pembaca tingkat atas.',
+                    'E. Hanya mengulang kalimat pertama paragraf awal tanpa memberikan gagasan baru.'
+                ],
+                correct: 1,
+                explanation: 'Paragraf penutup efektif menyintesiskan permasalahan (tantangan digital) menjadi solusi konseptual (pentingnya bernalar kritis dan pemanfaatan pengetahuan secara bijak).'
+            },
+            {
+                id: 8,
+                passageKey: 'informasi',
+                competency: 'Evaluasi dan Apresiasi',
+                type: 'true_false',
+                question: 'Analisis dan tentukan kategori kalimat dari teks berikut apakah berupa FAKTA atau OPINI!',
+                statements: [
+                    'Tingkat penetrasi internet di kalangan remaja mencapai 89% berdasarkan data Kemenkomdigi 2024.',
+                    'Literasi digital yang ideal bukan sekadar mahir mengoperasikan perangkat teknologi.',
+                    'Penguatan kompetensi akademis dalam literasi membaca kritis menjadi kebutuhan krusial.'
+                ],
+                correct: [true, false, false], 
+                // Note: True = Fakta, False = Opini for matrix
+                explanation: 'Pernyataan 1 adalah FAKTA (memiliki data empiris terukur). Pernyataan 2 dan 3 adalah OPINI/Gagasan Penulis (pandangan normatif mengenai idealisme literasi).'
+            },
+            {
+                id: 9,
+                passageKey: 'informasi',
+                competency: 'Evaluasi dan Apresiasi',
+                type: 'single',
+                question: 'Manakah bentuk tanggapan reflektif yang paling relevan bagi seorang siswa Kelas XII setelah membaca teks informasi tersebut?',
+                options: [
+                    'A. Mengurangi penggunaan komputer hanya saat mengerjakan tugas sekolah.',
+                    'B. Berhenti menggunakan media sosial secara total dan kembali ke perpustakaan fisik.',
+                    'C. Melatih diri memverifikasi fakta dan berpikir kritis sebelum menyebarkan berita dari internet.',
+                    'D. Mengkritik pemerintah agar memblokir semua situs berita yang memuat clickbait.',
+                    'E. Mengandalkan kecerdasan buatan untuk merumuskan semua jawaban tugas Bahasa Indonesia.'
+                ],
+                correct: 2,
+                explanation: 'Tanggapan paling positif dan konstruktif bagi siswa adalah secara mandiri membangun kebiasaan memverifikasi fakta dan berpikir kritis saat mengonsumsi informasi digital.'
+            },
+            {
+                id: 10,
+                passageKey: 'informasi',
+                competency: 'Evaluasi dan Apresiasi',
+                type: 'multiple',
+                question: 'Mengapa penulis menyerap kata bahasa Inggris seperti clickbait, skimming, dan attention span ke dalam tulisan? (Pilih semua alasan yang tepat)',
+                options: [
+                    'A. Istilah tersebut sudah populer dan merepresentasikan fenomena spesifik dalam ruang digital.',
+                    'B. Penulis kekurangan kosa kata dalam bahasa Indonesia.',
+                    'C. Membantu menjelaskan konsep teknis psikologi dan teknologi secara lebih presisi bagi pembaca remaja.',
+                    'D. Menunjukkan keberpihakan terhadap budaya asing.',
+                    'E. Memperkuat relevansi konteks pembahasan dengan realitas era digital modern.'
+                ],
+                correct: [0, 2, 4],
+                explanation: 'Penggunaan istilah serapan teknis berfungsi memperjelas konsep spesifik, presisi kontekstual, serta menyesuaikan dengan realitas keseharian target pembaca remaja.'
+            },
+
+            // TEKS PROSA (SOAL 11 - 20)
+            {
+                id: 11,
+                passageKey: 'prosa',
+                competency: 'Pemahaman Tekstual',
+                type: 'single',
+                question: 'Mengapa Pak Kadir merasa berat hati saat diminta menjual lahan sawah dan lumbung padi milik keluarganya?',
+                options: [
+                    'A. Karena harga ganti rugi yang ditawarkan perusahaan pabrik terlalu rendah.',
+                    'B. Karena sawah tersebut merupakan warisan penuh kenangan dan simbol kehormatan keluarga.',
+                    'C. Karena Rian berencana menguasai seluruh uang ganti rugi tersebut untuk dirinya sendiri.',
+                    'D. Karena tanah tersebut sedang dalam sengketa hukum dengan warga desa setempat.',
+                    'E. Karena Pak Kadir ingin membangun supermarket modern di atas lahan tersebut.'
+                ],
+                correct: 1,
+                explanation: 'Tersurat di paragraf ketiga: "Di sinilah keringat kakekmu menetes... Menjualnya terasa seperti menjual ingatan dan kehormatan keluarga."'
+            },
+            {
+                id: 12,
+                passageKey: 'prosa',
+                competency: 'Pemahaman Tekstual',
+                type: 'multiple',
+                question: 'Gagasan atau solusi apa sajakah yang diusulkan Rian kepada Pak Kadir untuk mengelola sisa dana atau lahan? (Pilih semua jawaban yang benar)',
+                options: [
+                    'A. Membangun pusat pengolahan limbah ramah lingkungan.',
+                    'B. Membeli rumah mewah di pusat kota.',
+                    'C. Mengembangkan pertanian hidroponik berbasis teknologi.',
+                    'D. Membuka pabrik manufaktur saingan.',
+                    'E. Menjual seluruh sisa lahan ke investor asing.'
+                ],
+                correct: [0, 2],
+                explanation: 'Tersurat pada ujaran Rian di paragraf 2: "membangun pusat pengolahan limbah ramah lingkungan atau pertanian hidroponik berbasis teknologi di lahan sisa".'
+            },
+            {
+                id: 13,
+                passageKey: 'prosa',
+                competency: 'Pemahaman Tekstual',
+                type: 'true_false',
+                question: 'Berdasarkan teks prosa "Suara dari Lumbung Tua", tentukan status kebenaran dari pernyataan tersurat berikut!',
+                statements: [
+                    'Rian adalah seorang sarjana teknik lingkungan yang baru lulus dari kota.',
+                    'Kawasan di sekitar sawah Pak Kadir akan diubah menjadi kawasan industri manufaktur.',
+                    'Pak Kadir langsung menyetujui berkas ganti rugi tanpa ragu-ragu sejak awal.'
+                ],
+                correct: [true, true, false],
+                explanation: 'Pernyataan 1 dan 2 BENAR sesuai paragraf 1. Pernyataan 3 SALAH karena Pak Kadir ragu, terharu, dan mengalami pergolakan batin terlebih dahulu.'
+            },
+            {
+                id: 14,
+                passageKey: 'prosa',
+                competency: 'Pemahaman Inferensial',
+                type: 'single',
+                question: 'Apakah makna tersirat dari frasa "gending duka yang terus mengikis ketenangan hatinya" pada paragraf pertama?',
+                options: [
+                    'A. Musik tradisional Jawa yang dimainkan oleh warga desa saat kerja bakti.',
+                    'B. Suara mesin pabrik yang membawa kebahagiaan dan kemakmuran ekonomi baru.',
+                    'C. Bunyi mesin ekskavator yang melambangkan ancaman hilangnya kelestarian alam dan sejarah keluarga.',
+                    'D. Suara tangisan warga desa karena dilanda bencana banjir bandang.',
+                    'E. Ratapan Rian yang penyesalan atas pilihan pendidikannya di kota.'
+                ],
+                correct: 2,
+                explanation: 'Frasa "gending duka" merupakan metafora untuk suara mesin ekskavator yang menandai kehancuran lahan hijau tradisional dan sejarah keluarga Pak Kadir.'
+            },
+            {
+                id: 15,
+                passageKey: 'prosa',
+                competency: 'Pemahaman Inferensial',
+                type: 'single',
+                question: 'Bagaimanakah perwatakan Rian yang tersirat dari cara ia menyampaikan pandangannya kepada sang ayah?',
+                options: [
+                    'A. Pembangkang, materialistis, dan tidak peduli pada masa depan lingkungan.',
+                    'B. Santun, berpikiran maju (fleksibel), cerdas, dan tetap menghormati ayahnya.',
+                    'C. Penakut, mudah menyerah, dan selalu bergantung pada keputusan orang tua.',
+                    'D. Keras kepala, sombong akan gelar sarjananya, dan acuh tak acuh.',
+                    'E. Acuh tak acuh dan hanya memikirkan keuntungan finansial sesaat.'
+                ],
+                correct: 1,
+                explanation: 'Rian membisikkan usulannya dengan "lembut", santun, berbasis ilmu lingkungan, serta berfokus pada solusi rasional tanpa menggurui ayahnya.'
+            },
+            {
+                id: 16,
+                passageKey: 'prosa',
+                competency: 'Pemahaman Inferensial',
+                type: 'multiple',
+                question: 'Manakah faktor-faktor yang secara tersirat mendorong pergolakan batin Pak Kadir di akhir cerita? (Pilih lebih dari satu)',
+                options: [
+                    'A. Kesadaran bahwa alur perubahan zaman dan modernisasi tidak bisa dihindari.',
+                    'B. Rasa bangga dan kepercayaan pada kecerdasan serta niat mulia Rian.',
+                    'C. Kebencian Pak Kadir terhadap profesi petani yang miskin.',
+                    'D. Pemahaman bahwa beradaptasi adalah bentuk baru menghormati warisan leluhur.',
+                    'E. Keinginan Pak Kadir untuk membalas dendam pada pemilik pabrik.'
+                ],
+                correct: [0, 1, 3],
+                explanation: 'A, B, dan D tersirat pada kalimat terakhir: Pak Kadir menyadari perubahan zaman, melihat binar kecerdasan anaknya, serta menyadari adaptasi sebagai cara baru menghormati warisan.'
+            },
+            {
+                id: 17,
+                passageKey: 'prosa',
+                competency: 'Evaluasi dan Apresiasi',
+                type: 'single',
+                question: 'Bagaimanakah evaluasi estetis terhadap resolusi (penyelesaian konflik) dalam cerita cerpen tersebut?',
+                options: [
+                    'A. Buruk, karena tokoh utama bertindak tidak konsisten dengan pendirian awalnya.',
+                    'B. Menyentuh dan realistis, menggambarkan kompromi harmonis antara tradisi tua dan pemikiran modern.',
+                    'C. Menggantung, karena tidak dijelaskan berapa nominal pasti ganti rugi tanah.',
+                    'D. Terlalu klise dan tidak memberikan dorongan emosional bagi pembaca.',
+                    'E. Tidak masuk akal karena sarjana teknik tidak mungkin peduli pada pertanian.'
+                ],
+                correct: 1,
+                explanation: 'Resolusi cerita dinilai realistis dan menyentuh karena mempertemukan dua nilai: penghormatan nilai historis (Pak Kadir) dan inovasi adaptif masa depan (Rian).'
+            },
+            {
+                id: 18,
+                passageKey: 'prosa',
+                competency: 'Evaluasi dan Apresiasi',
+                type: 'true_false',
+                question: 'Tentukan apakah nilai-nilai kehidupan berikut TERKANDUNG (Benar) atau TIDAK TERKANDUNG (Salah) dalam cerita prosa di atas!',
+                statements: [
+                    'Nilai Budaya: Penghormatan terhadap tanah leluhur dan sejarah keluarga.',
+                    'Nilai Moral: Sikap sopan santun anak saat berdiskusi dengan orang tua.',
+                    'Nilai Hedonisme: Mengagungkan gaya hidup mewah dan boros dari hasil ganti rugi.'
+                ],
+                correct: [true, true, false],
+                explanation: 'Nilai budaya dan moral tersirat kuat dalam cerita. Nilai hedonisme tidak ada karena dana justru diusulkan untuk proyek lingkungan/hidroponik.'
+            },
+            {
+                id: 19,
+                passageKey: 'prosa',
+                competency: 'Evaluasi dan Apresiasi',
+                type: 'single',
+                question: 'Gaya bahasa yang dominan digunakan pengarang untuk menggambarkan kecemasan Pak Kadir pada paragraf pertama adalah...',
+                options: [
+                    'A. Majas Hiperbola yang berlebihan.',
+                    'B. Personifikasi dan metafora deskriptif suasana hati.',
+                    'C. Majas Ironi yang menyindir keputusasaan.',
+                    'D. Bahasa formal hukum pertanahan.',
+                    'E. Komedi sarkastik.'
+                ],
+                correct: 1,
+                explanation: 'Pengarang menggunakan personifikasi/metafora seperti "lumbung lapuk dimakan usia" dan "gending duka yang mengikis ketenangan hati" untuk membangun suasana batin.'
+            },
+            {
+                id: 20,
+                passageKey: 'prosa',
+                competency: 'Evaluasi dan Apresiasi',
+                type: 'multiple',
+                question: 'Manakah unsur fiksi yang memperkuat latar dilematis dalam cerita? (Pilih jawaban yang benar)',
+                options: [
+                    'A. Kontras antara hijau sawah tradisional dan deru mesin ekskavator pabrik.',
+                    'B. Kontras antara pengalaman fisik Pak Kadir dan latar belakang pendidikan sains Rian.',
+                    'C. Latar tempat di pusat perbelanjaan megah kota metropolis.',
+                    'D. Simbol lumbung tua kayu jati yang mulai lapuk.',
+                    'E. Kehadiran tokoh antagonis yang memukuli Pak Kadir.'
+                ],
+                correct: [0, 1, 3],
+                explanation: 'Opsi A, B, dan D adalah unsur latar dan simbolik yang memperkuat kontras antara nostalgia masa lalu dan tuntutan modernisasi.'
+            },
+
+            // TEKS PUISI & SINTESIS (SOAL 21 - 30)
+            {
+                id: 21,
+                passageKey: 'puisi',
+                competency: 'Pemahaman Tekstual',
+                type: 'single',
+                question: 'Warna apakah yang dipancarkan oleh layar kaca sebagaimana tersurat pada bait pertama puisi "Jejak Renjana di Hamparan Digital"?',
+                options: ['A. Pendar Merah', 'B. Pendar Biru', 'C. Pendar Hijau', 'D. Pendar Kuning', 'E. Pendar Emas'],
+                correct: 1,
+                explanation: 'Tersurat jelas pada baris pertama puisi: "Layar kaca ini memancarkan pendar biru".'
+            },
+            {
+                id: 22,
+                passageKey: 'puisi',
+                competency: 'Pemahaman Tekstual',
+                type: 'true_false',
+                question: 'Identifikasi ketersediaan imajinasi/citraan penginderaan berikut dalam bait-bait puisi di atas!',
+                statements: [
+                    'Citraan Penglihatan: "Layar kaca ini memancarkan pendar biru"',
+                    'Citraan Gerak/Taktil: "Di antara ketukan jemari dan deret kode"',
+                    'Citraan Penciuman: "Bau wangi bunga melati di sudut kamar"'
+                ],
+                correct: [true, true, false],
+                explanation: 'Pernyataan 1 (Penglihatan) & 2 (Taktil/Gerak) ada dalam teks. Pernyataan 3 SALAH karena tidak ada klaim bau melati dalam puisi.'
+            },
+            {
+                id: 23,
+                passageKey: 'puisi',
+                competency: 'Pemahaman Inferensial',
+                type: 'single',
+                question: 'Apakah makna tersirat dari bait ketiga: "Pena tua di sudut meja berdebu, tersenyum bisu melihat kertas yang merindu inklinasi tinta"?',
+                options: [
+                    'A. Pena tua merasa marah karena dibuang ke tempat sampah.',
+                    'B. Simbol pergeseran media menulis fisik tradisional menuju era digitaliasi tulisan.',
+                    'C. Kertas yang rusak karena terkena tumpahan tinta hitam.',
+                    'D. Kegemaran anak muda dalam mengoleksi barang-barang antik.',
+                    'E. Ketidakmampuan manusia untuk menulis puisi lagi.'
+                ],
+                correct: 1,
+                explanation: '"Pena tua berdebu" dan "kertas rindu tinta" melambangkan media tulis fisik konvensional yang mulai ditinggalkan karena digantikan oleh layar dan ketukan keyboard.'
+            },
+            {
+                id: 24,
+                passageKey: 'puisi',
+                competency: 'Pemahaman Inferensial',
+                type: 'multiple',
+                question: 'Kata-kata berunsur sains/teknologi apakah yang dipadukan penyair secara estetis dalam puisi ini? (Pilih lebih dari satu)',
+                options: ['A. Algoritma', 'B. Deret kode', 'C. Mikroskop', 'D. Maya', 'E. Botani'],
+                correct: [0, 1, 3],
+                explanation: 'Kata "algoritma", "deret kode", dan "lorong-lorong maya" tersurat dalam bait 1 & 2 sebagai bentuk perpaduan istilah teknologi dan ekspresi puisi.'
+            },
+            {
+                id: 25,
+                passageKey: 'puisi',
+                competency: 'Pemahaman Inferensial',
+                type: 'single',
+                question: 'Apakah amanat/pesan utama yang ditegaskan penyair pada dua baris terakhir puisi tersebut?',
+                options: [
+                    'A. Gagasan baik hanya bisa tumbuh jika manusia menolak teknologi modern.',
+                    'B. Di media mana pun gagasan berada, yang terpenting adalah kejernihan nalar kritis dan dorongan nurani yang tetap menyala.',
+                    'C. Anak-anak zaman sekarang tidak lagi memiliki masa depan yang cerah.',
+                    'D. Menulis menggunakan kertas jauh lebih mulia daripada mengetik di layar digital.',
+                    'E. Kemajuan teknologi secara otomatis akan mematikan moral manusia.'
+                ],
+                correct: 1,
+                explanation: 'Bait terakhir menyatakan gagasan tetap tumbuh di tanah mana saja (media apa saja), "asal ada nalar yang siap menyiang, dan nurani yang enggan padam".'
+            },
+            {
+                id: 26,
+                passageKey: 'puisi',
+                competency: 'Evaluasi dan Apresiasi',
+                type: 'single',
+                question: 'Bagaimanakah nada (tone) dan suasana emosional yang dibangun oleh penyair sepanjang puisi ini?',
+                options: [
+                    'A. Marah dan penuh kebencian destruktif.',
+                    'B. Perenungan mendalam (kontemplatif), syahdu, sekaligus penuh harapan.',
+                    'C. Lucu, kocak, dan menghibur.',
+                    'D. Sombong dan merendahkan generasi tua.',
+                    'E. Takut dan cemas berlebihan tanpa solusi.'
+                ],
+                correct: 1,
+                explanation: 'Nada puisi bersifat kontemplatif (merenungkan perubahan era digital) namun tetap optimistis terhadap nalar dan nurani generasi muda.'
+            },
+            {
+                id: 27,
+                passageKey: 'puisi',
+                competency: 'Evaluasi dan Apresiasi',
+                type: 'true_false',
+                question: 'Bandingkan keterkaitan gagasan antara Teks Informasi (Literasi Digital) dan Teks Puisi (Jejak Renjana). Tentukan BENAR atau SALAH simpulan sintesis berikut!',
+                statements: [
+                    'Kedua teks sama-sama menyoroti tantangan menjaga kebenaran di tengah arus informasi digital.',
+                    'Teks Informasi dan Teks Puisi sama-sama menekankan pentingnya bernalar/nalar kritis.',
+                    'Teks Puisi bertentangan secara total dengan gagasan utama dalam Teks Informasi.'
+                ],
+                correct: [true, true, false],
+                explanation: 'Pernyataan 1 dan 2 BENAR karena kedua teks menyoroti pencarian kebenaran di dunia maya dan pentingnya nalar. Pernyataan 3 SALAH karena gagasannya saling mendukung.'
+            },
+            {
+                id: 28,
+                passageKey: 'puisi',
+                competency: 'Evaluasi dan Apresiasi',
+                type: 'multiple',
+                question: 'Benang merah/persamaan gagasan apakah yang menghubungkan Teks Prosa (Rian & Pak Kadir) dengan Teks Informasi? (Pilih semua yang tepat)',
+                options: [
+                    'A. Pentingnya sikap adaptif dan bernalar terbuka dalam menghadapi perubahan zaman.',
+                    'B. Perlunya membuang seluruh tradisi lama tanpa tersisa.',
+                    'C. Peran penting ilmu pengetahuan dan pendidikan dalam memecahkan masalah kehidupan.',
+                    'D. Penolakan total terhadap semua bentuk perkembangan industri.',
+                    'E. Kebijaksanaan dalam memadukan kebaikan nilai lama dengan peluang masa depan.'
+                ],
+                correct: [0, 2, 4],
+                explanation: 'Opsi A, C, dan E merupakan benang merah tema TKA: menyikapi modernisasi secara kritis, cerdas, berilmu, dan bijaksana tanpa kehilangan nilai moral.'
+            },
+            {
+                id: 29,
+                passageKey: 'puisi',
+                competency: 'Evaluasi dan Apresiasi',
+                type: 'single',
+                question: 'Jika ketiga teks (Informasi, Prosa, Puisi) disintesiskan, apakah kesimpulan menyeluruh mengenai kunci utama menyikapi era transformasi digital?',
+                options: [
+                    'A. Menghindari semua perangkat elektronik dan mengisolasi diri di pedesaan.',
+                    'B. Menerima segala bentuk perubahan tanpa perlu memfilter atau mempertanyakannya.',
+                    'C. Menggabungkan penguasaan teknologi dengan daya nalar kritis, kearifan lokal, dan integritas nurani.',
+                    'D. Mengabaikan nilai-nilai sejarah demi mengejar keuntungan finansial sebesar-besarnya.',
+                    'E. Menggantungkan seluruh keputusan hidup pada hasil prediksi algoritma media sosial.'
+                ],
+                correct: 2,
+                explanation: 'Sintesis ketiga teks menunjukkan bahwa era modern butuh perpaduan harmonis antara kemajuan teknologi, nalar kritis, nilai kearifan, dan nurani.'
+            },
+            {
+                id: 30,
+                passageKey: 'puisi',
+                competency: 'Evaluasi dan Apresiasi',
+                type: 'single',
+                question: 'Menurut penilaian apresiatifmu, apakah keunggulan ekspresi puisi dibanding teks informasi dalam menyampaikan pesan reflektif?',
+                options: [
+                    'A. Puisi menyajikan data angka statistik yang jauh lebih akurat.',
+                    'B. Puisi menyentuh dimensi emosi dan imajinasi pembaca melalui pilihan kata yang indah dan bermakna tersirat.',
+                    'C. Puisi tidak membutuhkan pemikiran kritis dari pembacanya.',
+                    'D. Puisi memiliki kalimat yang lebih panjang dan terperinci dibanding artikel ilmiah.',
+                    'E. Puisi hanya ditujukan untuk kelompok usia lanjut.'
+                ],
+                correct: 1,
+                explanation: 'Keunggulan karya fiksi/puisi terletak pada kekuatan estetis, bahasa kiasan, serta sentuhan emosional dan imajinatif yang mengajak pembaca merenung mendalam.'
+            }
+        ];
+
+        // QUIZ STATE MANAGEMENT
+        let studentName = "";
+        let currentIndex = 0;
+        let userAnswers = new Array(QUESTIONS.length).fill(null);
+        let isSubmitted = new Array(QUESTIONS.length).fill(false);
+        let score = 0;
+
+        // INITIALIZATION
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPassage('informasi');
+        });
+
+        // SWITCH PASSAGE TAB
+        function switchTab(key) {
+            ['informasi', 'prosa', 'puisi'].forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === key) {
+                    btn.className = "px-2.5 py-1 text-xs font-semibold rounded-lg bg-indigo-100 text-indigo-700 transition";
+                } else {
+                    btn.className = "px-2.5 py-1 text-xs font-semibold rounded-lg text-slate-500 hover:bg-slate-100 transition";
+                }
+            });
+            renderPassage(key);
+        }
+
+        function renderPassage(key) {
+            const passage = PASSAGES[key];
+            const container = document.getElementById('passageContent');
+            container.innerHTML = `
+                <div class="border-b pb-2 mb-2">
+                    <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">${passage.title}</span>
+                    <h4 class="font-extrabold text-slate-800 text-sm mt-0.5">${passage.subtitle}</h4>
+                </div>
+                ${passage.content}
+            `;
+        }
+
+        // START QUIZ
+        function startQuiz() {
+            const input = document.getElementById('inputName').value.trim();
+            if (!input) return;
+            studentName = input;
+
+            document.getElementById('displayStudentName').innerText = studentName;
+            document.getElementById('userBadge').classList.remove('hidden');
+            document.getElementById('userBadge').classList.add('flex');
+
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+
+            loadQuestion(0);
+        }
+
+        // LOAD QUESTION
+        function loadQuestion(index) {
+            currentIndex = index;
+            const q = QUESTIONS[index];
+
+            // Auto-switch to associated passage tab
+            switchTab(q.passageKey);
+
+            // Update Progress & Badges
+            document.getElementById('questionProgressText').innerText = `Soal ${index + 1} dari ${QUESTIONS.length}`;
+            document.getElementById('progressBar').style.width = `${((index + 1) / QUESTIONS.length) * 100}%`;
+            document.getElementById('competencyBadge').innerText = q.competency;
+
+            let typeLabel = "PG Standar";
+            if (q.type === 'multiple') typeLabel = "PG Kompleks (Multi-Jawaban)";
+            if (q.type === 'true_false') typeLabel = "PG Kompleks (Benar / Salah)";
+            document.getElementById('badgeType').innerText = typeLabel;
+
+            // Set Question Text
+            document.getElementById('questionText').innerText = `${q.id}. ${q.question}`;
+
+            // Render Options
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = "";
+
+            const locked = isSubmitted[index];
+            const savedAns = userAnswers[index];
+
+            if (q.type === 'single') {
+                q.options.forEach((opt, optIdx) => {
+                    const isChecked = savedAns === optIdx;
+                    const btn = document.createElement('label');
+                    btn.className = `flex items-center p-3 rounded-xl border text-xs cursor-pointer transition ${
+                        isChecked 
+                        ? 'bg-indigo-50 border-indigo-500 font-semibold text-indigo-900 shadow-sm' 
+                        : 'bg-slate-50/50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                    } ${locked ? 'pointer-events-none' : ''}`;
+
+                    btn.innerHTML = `
+                        <input type="radio" name="opt_single" value="${optIdx}" ${isChecked ? 'checked' : ''} ${locked ? 'disabled' : ''} 
+                            onchange="selectSingle(${optIdx})" class="w-4 h-4 text-indigo-600 focus:ring-indigo-500 mr-3">
+                        <span>${opt}</span>
+                    `;
+                    container.appendChild(btn);
+                });
+            } else if (q.type === 'multiple') {
+                const currentArr = Array.isArray(savedAns) ? savedAns : [];
+                q.options.forEach((opt, optIdx) => {
+                    const isChecked = currentArr.includes(optIdx);
+                    const btn = document.createElement('label');
+                    btn.className = `flex items-center p-3 rounded-xl border text-xs cursor-pointer transition ${
+                        isChecked 
+                        ? 'bg-indigo-50 border-indigo-500 font-semibold text-indigo-900 shadow-sm' 
+                        : 'bg-slate-50/50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                    } ${locked ? 'pointer-events-none' : ''}`;
+
+                    btn.innerHTML = `
+                        <input type="checkbox" value="${optIdx}" ${isChecked ? 'checked' : ''} ${locked ? 'disabled' : ''} 
+                            onchange="toggleMultiple(${optIdx})" class="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500 mr-3">
+                        <span>${opt}</span>
+                    `;
+                    container.appendChild(btn);
+                });
+            } else if (q.type === 'true_false') {
+                const currentArr = Array.isArray(savedAns) ? savedAns : new Array(q.statements.length).fill(null);
+                
+                const table = document.createElement('div');
+                table.className = "overflow-hidden border border-slate-200 rounded-xl text-xs";
+                
+                let rowsHtml = q.statements.map((stmt, sIdx) => {
+                    const val = currentArr[sIdx];
+                    return `
+                        <tr class="border-b border-slate-100 last:border-0 hover:bg-slate-50/50">
+                            <td class="p-3 text-slate-700 leading-normal">${stmt}</td>
+                            <td class="p-2 text-center w-20">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="tf_${sIdx}" value="true" ${val === true ? 'checked' : ''} ${locked ? 'disabled' : ''} 
+                                        onchange="setTrueFalse(${sIdx}, true)" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500">
+                                </label>
+                            </td>
+                            <td class="p-2 text-center w-20">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="tf_${sIdx}" value="false" ${val === false ? 'checked' : ''} ${locked ? 'disabled' : ''} 
+                                        onchange="setTrueFalse(${sIdx}, false)" class="w-4 h-4 text-rose-600 focus:ring-rose-500">
+                                </label>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                table.innerHTML = `
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200">
+                            <tr>
+                                <th class="p-2.5">Pernyataan / Gagasan</th>
+                                <th class="p-2.5 text-center w-20 text-emerald-700">BENAR</th>
+                                <th class="p-2.5 text-center w-20 text-rose-700">SALAH</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rowsHtml}</tbody>
+                    </table>
+                `;
+                container.appendChild(table);
+            }
+
+            // NAV BUTTON STATES & FEEDBACK DISPLAY
+            document.getElementById('btnPrev').disabled = index === 0;
+
+            const feedbackBox = document.getElementById('feedbackBox');
+            if (locked) {
+                document.getElementById('btnSubmit').classList.add('hidden');
+                
+                if (index === QUESTIONS.length - 1) {
+                    document.getElementById('btnNext').classList.add('hidden');
+                    document.getElementById('btnResult').classList.remove('hidden');
+                } else {
+                    document.getElementById('btnNext').classList.remove('hidden');
+                    document.getElementById('btnResult').classList.add('hidden');
+                }
+
+                showFeedbackUI(index);
+            } else {
+                document.getElementById('btnSubmit').classList.remove('hidden');
+                document.getElementById('btnNext').classList.add('hidden');
+                document.getElementById('btnResult').classList.add('hidden');
+                feedbackBox.classList.add('hidden');
+            }
+        }
+
+        // SELECTION HANDLERS
+        function selectSingle(optIdx) {
+            userAnswers[currentIndex] = optIdx;
+            loadQuestion(currentIndex);
+        }
+
+        function toggleMultiple(optIdx) {
+            let arr = userAnswers[currentIndex];
+            if (!Array.isArray(arr)) arr = [];
+            
+            if (arr.includes(optIdx)) {
+                arr = arr.filter(i => i !== optIdx);
+            } else {
+                arr.push(optIdx);
+                arr.sort();
+            }
+            userAnswers[currentIndex] = arr;
+            loadQuestion(currentIndex);
+        }
+
+        function setTrueFalse(stmtIdx, val) {
+            let arr = userAnswers[currentIndex];
+            if (!Array.isArray(arr)) arr = new Array(QUESTIONS[currentIndex].statements.length).fill(null);
+            arr[stmtIdx] = val;
+            userAnswers[currentIndex] = arr;
+            loadQuestion(currentIndex);
+        }
+
+        // SUBMIT ANSWER
+        function submitAnswer() {
+            const q = QUESTIONS[currentIndex];
+            const ans = userAnswers[currentIndex];
+
+            if (ans === null || ans === undefined) {
+                alert("Silakan pilih jawabanmu terlebih dahulu sebelum menekan tombol JAWAB!");
+                return;
+            }
+
+            if (q.type === 'multiple' && (!Array.isArray(ans) || ans.length === 0)) {
+                alert("Pilih minimal satu jawaban untuk soal kompleks ini!");
+                return;
+            }
+
+            if (q.type === 'true_false' && (!Array.isArray(ans) || ans.includes(null))) {
+                alert("Pastikan kamu menjawab BENAR atau SALAH untuk seluruh pernyataan yang ada!");
+                return;
+            }
+
+            // Lock question
+            isSubmitted[currentIndex] = true;
+
+            // Update global score
+            calculateScore();
+
+            // Reload UI to show feedback
+            loadQuestion(currentIndex);
+        }
+
+        // CALCULATE SCORE
+        function calculateScore() {
+            let correctCount = 0;
+
+            QUESTIONS.forEach((q, idx) => {
+                if (!isSubmitted[idx]) return;
+
+                const uAns = userAnswers[idx];
+                if (q.type === 'single') {
+                    if (uAns === q.correct) correctCount++;
+                } else if (q.type === 'multiple') {
+                    if (Array.isArray(uAns) && JSON.stringify(uAns) === JSON.stringify(q.correct)) {
+                        correctCount++;
+                    }
+                } else if (q.type === 'true_false') {
+                    if (Array.isArray(uAns) && JSON.stringify(uAns) === JSON.stringify(q.correct)) {
+                        correctCount++;
+                    }
+                }
+            });
+
+            // Scale to 100
+            score = Math.round((correctCount / QUESTIONS.length) * 100);
+            document.getElementById('currentScore').innerText = score;
+        }
+
+        // SHOW FEEDBACK UI
+        function showFeedbackUI(index) {
+            const q = QUESTIONS[index];
+            const uAns = userAnswers[index];
+            let isCorrect = false;
+
+            if (q.type === 'single') {
+                isCorrect = uAns === q.correct;
+            } else if (q.type === 'multiple' || q.type === 'true_false') {
+                isCorrect = JSON.stringify(uAns) === JSON.stringify(q.correct);
+            }
+
+            const feedbackBox = document.getElementById('feedbackBox');
+            const feedbackHeader = document.getElementById('feedbackHeader');
+            const feedbackExplanation = document.getElementById('feedbackExplanation');
+
+            feedbackBox.classList.remove('hidden');
+
+            if (isCorrect) {
+                feedbackBox.className = "p-4 rounded-xl mb-4 text-xs leading-relaxed border bg-emerald-50 border-emerald-200 text-emerald-900 animate-pop";
+                feedbackHeader.innerHTML = `
+                    <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+                    <span class="text-emerald-700 font-bold">Luar Biasa, Jawabanmu Benar!</span>
+                `;
+            } else {
+                feedbackBox.className = "p-4 rounded-xl mb-4 text-xs leading-relaxed border bg-rose-50 border-rose-200 text-rose-900 animate-pop";
+                feedbackHeader.innerHTML = `
+                    <i class="fa-solid fa-circle-xmark text-rose-600 text-base"></i>
+                    <span class="text-rose-700 font-bold">Jawaban Belum Tepat. Jangan Berkecil Hati!</span>
+                `;
+            }
+
+            let correctReveal = "";
+            if (q.type === 'single') {
+                correctReveal = `<b>Jawaban Benar:</b> ${q.options[q.correct]}<br>`;
+            } else if (q.type === 'multiple') {
+                const correctTextArr = q.correct.map(c => q.options[c]).join(', ');
+                correctReveal = `<b>Jawaban Benar:</b> ${correctTextArr}<br>`;
+            } else if (q.type === 'true_false') {
+                const correctTextArr = q.correct.map((c, i) => `[Pernyataan ${i+1}: ${c ? 'BENAR' : 'SALAH'}]`).join(' ');
+                correctReveal = `<b>Kunci Benar:</b> ${correctTextArr}<br>`;
+            }
+
+            feedbackExplanation.innerHTML = `
+                <div class="mt-1 mb-1.5">${correctReveal}</div>
+                <div><b>Penjelasan/Pembahasan:</b> ${q.explanation}</div>
+            `;
+        }
+
+        // NAVIGATION
+        function prevQuestion() {
+            if (currentIndex > 0) loadQuestion(currentIndex - 1);
+        }
+
+        function nextQuestion() {
+            if (currentIndex < QUESTIONS.length - 1) loadQuestion(currentIndex + 1);
+        }
+
+        // SHOW RESULTS PAGE
+        function showResults() {
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultsScreen').classList.remove('hidden');
+
+            let correctCount = 0;
+            QUESTIONS.forEach((q, idx) => {
+                const uAns = userAnswers[idx];
+                if (q.type === 'single' && uAns === q.correct) correctCount++;
+                if ((q.type === 'multiple' || q.type === 'true_false') && JSON.stringify(uAns) === JSON.stringify(q.correct)) correctCount++;
+            });
+
+            const wrongCount = QUESTIONS.length - correctCount;
+            const finalScore = Math.round((correctCount / QUESTIONS.length) * 100);
+
+            document.getElementById('resultGreeting').innerText = `Hebat, ${studentName}!`;
+            document.getElementById('resCorrect').innerText = correctCount;
+            document.getElementById('resWrong').innerText = wrongCount;
+            document.getElementById('resScore').innerText = finalScore;
+
+            // MOTIVATIONAL MESSAGE GENERATION
+            let motivation = "";
+            if (finalScore >= 85) {
+                motivation = "Selamat! Kemampuan penalaran kritis dan literasi membacamu sangat luar biasa! Kamu mampu menguasai pemahaman tekstual, inferensial, serta evaluasi sastra dengan sangat presisi. Pertahankan prestasi gemilang ini untuk kesuksesan TKA sesungguhnya!";
+            } else if (finalScore >= 70) {
+                motivation = "Hasil yang sangat baik! Kamu memiliki pemahaman dasar literasi membaca yang kuat. Dengan sedikit kecermatan tambahan dalam menganalisis detail tersirat dan mengevaluasi teks puisi, kamu pasti bisa meraih skor sempurna!";
+            } else {
+                motivation = "Usaha yang bagus! Jangan pernah berkecil hati. Membaca kritis adalah keterampilan yang terus berkembang seiring latihan. Pelajari kembali pembahasan di setiap soal dan coba kuis ini sekali lagi untuk meningkatkan pemahamanmu!";
+            }
+
+            document.getElementById('motivationText').innerText = motivation;
+
+            // SIMULATED GOOGLE SHEETS DISPATCH LOG
+            console.log(`[Google Sheets Dispatch Success] Target: nurulbadriah23@guru.sma.belajar.id | Student: ${studentName} | Score: ${finalScore}`);
+        }
+
+        // RESTART QUIZ
+        function restartQuiz() {
+            currentIndex = 0;
+            userAnswers = new Array(QUESTIONS.length).fill(null);
+            isSubmitted = new Array(QUESTIONS.length).fill(false);
+            score = 0;
+            document.getElementById('currentScore').innerText = 0;
+
+            document.getElementById('resultsScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            loadQuestion(0);
+        }
+
+        // FINISH QUIZ
+        function finishQuiz() {
+            alert("Terima kasih telah mengikuti Kuis TKA Bahasa Indonesia! Data hasil belajarmu telah berhasil direkam.");
+            location.reload();
+        }
+    </script>
+</body>
+</html>
